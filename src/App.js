@@ -1,24 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import NavBar from './components/NavBar';
+import { Switch, Route } from 'react-router-dom';
+import Login from "./components/Login";
+import Register from "./components/Register";
+import NotFound from './components/NotFound';
+import PrivateRoute from './components/PrivateRoute';
+import Dashboard from "./components/Dashboard";
+import Unauthorized from './components/Unauthorized';
+import EntryPage from "./components/EntryPage";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <NavBar />
+      <div className = "content">
+        <Switch>
+          <PrivateRoute path = "/sleep/:id" component = {EntryPage} />
+          <PrivateRoute path = "/dashboard" component = {Dashboard} />
+          <Route path = "/unauthorized" component = {Unauthorized} />
+          <Route path = "/signup" component = {Register} />
+          <Route exact path = "/" component = {Login} />
+          <Route component = {NotFound} />
+        </Switch>
+      </div>
+      
+
     </div>
   );
 }
