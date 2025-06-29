@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import * as Icons from "@material-ui/icons";
+import * as Icons from "@mui/icons-material";
 import {TextContainer, FormContainer, NameInputGroup, TextField, PasswordField, IconButton, Button} from "../styled-components";
-import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { Checkbox, FormControlLabel } from "@mui/material";
 import useForm from "../hooks/useForm";
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';

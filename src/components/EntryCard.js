@@ -1,21 +1,62 @@
 import React from 'react';
 import styled from "styled-components";
-import Moment from "moment";
+import moment from "moment";
+import { FaRegClock } from "react-icons/fa";
 import { useHistory } from 'react-router-dom';
 
+const moodMap = {
+    1: '😞',
+    2: '😐',
+    3: '🙂',
+    4: '😄', 
+}
 
 const EntryCard = props => {
-    const {push} = useHistory();
+    const { push } = useHistory();    
+
+    const timeTotal = () => {
+        const hours = Math.floor(props.sleep_time_total);
+        const minutes = Math.round((props.sleep_time_total - hours) * 60);
+        return hours + " h " + minutes + " m ";
+    }
 
     return (
-        <Card onClick = {() => push(`/sleep/${props.id}`)}>
-            <LeftContent>
-                <h5>{Moment(props.sleep_start).format("MM/DD")} - {Moment(props.sleep_end).format("MM/DD")}</h5>
-                <p>{formatTotalTime(props.sleep_time_total)}</p>
-            </LeftContent>
-            <RightContent>
-                <h5>{Moment(props.sleep_start).format("LT")} - {Moment(props.sleep_end).format("LT")}</h5>
-            </RightContent>
+        <Card>
+            <Row>
+                <Label style = {{fontSize: "1.2rem"}}>Start Date</Label>
+                <Value>{moment(props.sleep_start).format("M/D/yyyy hh:mm A")}</Value>                       
+            </Row>
+            <RowDivider />
+            <Row>                
+                <Label style = {{fontSize: "1.2rem"}}>End Date</Label>
+                <Value>{moment(props.sleep_end).format("M/D/yyyy hh:mm A")}</Value>                
+            </Row>
+            <RowDivider />
+            <MoodRow>
+                <MoodItem>
+                    <Label>Daytime Mood</Label>
+                    <MoodIcon>{moodMap[props.moods.daytime]}</MoodIcon>
+                </MoodItem>
+                <MoodDivider />
+                <MoodItem>
+                    <Label>Sleep Start Mood</Label>
+                    <MoodIcon>{moodMap[props.moods.before_sleep]}</MoodIcon>
+                </MoodItem>
+                <MoodDivider />
+                <MoodItem>
+                    <Label>Sleep End Mood</Label>
+                    <MoodIcon>{moodMap[props.moods.after_sleep]}</MoodIcon>
+                </MoodItem>
+            </MoodRow>
+            <RowDivider />
+
+            <Footer>
+                <ClockIcon />
+                <div>
+                    <TotalLabel>Sleep Time Total</TotalLabel>
+                    <TotalValue>{timeTotal()}</TotalValue>
+                </div>
+            </Footer>
         </Card>
     );
 };
@@ -25,39 +66,93 @@ export default EntryCard;
 
 /* Styled Components CSS */
 const Card = styled.div`
-    width: 446px;
-    height: 160px;
+  background-color: #fff;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 100%;
+  height: 300px;
+  font-family: 'Arial', sans-serif;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 1rem 0;
+  &:first-of-type {
+    padding-top: 0;
+  }
+  &:last-of-type {
+    padding-bottom: 0;
+  }
+`;
+
+const RowDivider = styled.div`
+    display: block;
+    border-bottom: 1px solid #ddd;
+`;
+
+const MoodRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+  text-align: center;
+
+`;
+
+const MoodItem = styled.div`
+  
+`;
+
+const MoodIcon = styled.div`
+    margin-top: 0.7rem;
+    font-size: 2.2rem;
+`;
+
+const MoodDivider = styled.div`
+    display: block;
+    border-left: 1px solid #ddd;
+`;
+
+
+const Label = styled.div`
+  font-size: 0.9rem;
+  color: #000;
+`;
+
+const Value = styled.div`
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #555;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  & > div {
+    width: 100%;
     display: flex;
-    background: linear-gradient(0deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)), #121212;
-    padding: 0 16px;
-    margin: 12px 0;
-    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 2px 1px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `;
 
-const LeftContent = styled.div`
-    width: 50%;
-    text-align: left;
-    font-size: 16px;
+const ClockIcon = styled(FaRegClock)`
+  margin-right: 0.7rem;
+  color: #3e95d8;
+  font-size: 2rem
 `;
 
-const RightContent = styled.div`
-    width: 50%;
-    text-align: right;
-    font-size: 16px;
+const TotalLabel = styled.div`
+    color: #000;
+    font-Weight: 500;
 `;
-/* End of Styled Components CSS */
 
-
-/* Functions */
-const formatTotalTime = (decimalTime) => {
-    const msTime = decimalTime * 60 * 60;
-    const hours = Math.floor(msTime / (60 * 60));
-    let minutes = Math.floor((msTime - (hours * 60 * 60)) / 60);
-
-    if(minutes < 10) {
-        minutes = "0" + minutes;
-    }
-
-    return `${hours} hr ${minutes} min`;
-}
+const TotalValue = styled.div`
+    color: #000;
+    font-Weight: 500;
+`;

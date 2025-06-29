@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function useForm(initialValues) {
     const [values, setValues] = useState(initialValues);
-    console.log(values)
+    
+    useEffect(() => {
+        setValues(initialValues);
+    }, []);
+
     const handleChanges = e => {
         setValues({
             ...values,
@@ -10,5 +14,5 @@ export default function useForm(initialValues) {
         });
     }
 
-    return [values, handleChanges];
+    return [values, handleChanges, setValues];
 }

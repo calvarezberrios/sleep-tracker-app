@@ -16,7 +16,7 @@ function App() {
       <NavBar />
       <div className = "content">
         <Switch>
-          <PrivateRoute path = "/sleep/:id" component = {EntryPage} />
+          <Route path = "/sleep/:id" component = {EntryPage} />
           <PrivateRoute path = "/dashboard" component = {Dashboard} />
           <Route path = "/unauthorized" component = {Unauthorized} />
           <Route path = "/signup" component = {Register} />

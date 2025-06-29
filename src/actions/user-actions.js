@@ -40,6 +40,7 @@ function setUserState(user, keepLogged, dispatch) {
 
             if(keepLogged) {
                 localStorage.setItem("sleepToken", user.token);
+                localStorage.setItem("savedUser", user.user_id);
             }
 
             dispatch({

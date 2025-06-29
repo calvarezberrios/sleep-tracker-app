@@ -1,39 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
-import Moment from "moment";
-import * as Icons from "@material-ui/icons";
+import moment from "moment";
+import * as Icons from "@mui/icons-material";
 import * as Custom from "../styled-components";
 import { useSelector, useDispatch } from 'react-redux';
 import { getEntryById } from '../actions/entry-actions';
 import useForm from '../hooks/useForm';
+import MoodSelector from '../styled-components/MoodSelector';
 
 
 const EntryPage = ({match}) => {
-    //console.log(match.params.id)
+    
     const {entry, isFetching, error} = useSelector(state => state.entriesReducer);
     const dispatch = useDispatch();
-    const [entryValues, handleChanges] = useForm({
-        start_date: entry ? Moment(entry.sleep_start).format("MM/DD/YYYY") : "",
-        start_time: entry ? Moment(entry.sleep_start).format("LT") : "",
-        end_date: entry ? Moment(entry.sleep_end).format("MM/DD/YYYY"): "",
-        end_time: entry ? Moment(entry.sleep_end).format("LT") : ""
+
+    const [entryValues, handleChanges, setEntryValues] = useForm({
+        sleep_start: "",
+        sleep_end: ""
     });
     const [moods, setMoods] = useState({
-        before_sleep: entry ? entry.moods.before_sleep : "",
-        after_sleep: entry ? entry.moods.after_sleep : "",
-        daytime: entry ? entry.moods.daytime : ""
+        before_sleep: 0,
+        after_sleep: 0,
+        daytime: 0
     });
 
     useEffect(() => {
         dispatch(getEntryById(match.params.id));
-    }, [dispatch, match.params.id]);
+        
+    }, []);
     
-    console.log(entry)
+    useEffect(() => {
+        if (entry) {
+            setEntryValues({
+                sleep_start: moment(entry.sleep_start).format("YYYY-MM-DDTHH:mm"),
+                sleep_end: moment(entry.sleep_end).format("YYYY-MM-DDTHH:mm")
+            });
+
+            setMoods({
+                before_sleep: entry.moods.before_sleep || 0,
+                after_sleep: entry.moods.after_sleep || 0,
+                daytime: entry.moods?.daytime || 0
+            });
+        }
+    }, [entry, setEntryValues]);
+
     return (
         <EntryForm>
             <FormHeader>
                 <h2>Edit Entry</h2>
-                <Custom.IconButton><Icons.Delete /></Custom.IconButton>
+                <Custom.IconButton onClick={e => e.preventDefault()}><Icons.Delete /></Custom.IconButton>
             </FormHeader>
 
             <FormSection>
@@ -46,56 +61,22 @@ const EntryPage = ({match}) => {
                     onChange = {handleChanges}
                 />
 
-                <MoodIcons>
-                    <Custom.IconButton>
-                        <Icons.SentimentDissatisfiedOutlined />    
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentDissatisfied />
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentSatisfied />
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentSatisfiedOutlined />    
-                    </Custom.IconButton>
-                </MoodIcons>
+                <MoodSelector name = "sleep_start" value = { moods.before_sleep } moods = { moods } setMoods = { setMoods } />
                 
             </FormSection>
 
             <FormSection>
                 <h5>Sleep End</h5>
-                <DatetimeFields>
-                    <Custom.TextField 
-                        id = "end_date"
-                        type = "date"
-                        name = "end_date"
-                        value = {entryValues.end_date}
-                        onChange = {handleChanges}
-                    />
-                    <Custom.TextField 
-                        id = "end_time"
-                        type = "time"
-                        name = "end_time"
-                        value = {entryValues.end_time}
-                        onChange = {handleChanges}
-                    />
-                </DatetimeFields>
+                <Custom.TextField 
+                    id = "sleep_end"
+                    type = "datetime-local"
+                    name = "sleep_end"
+                    value = {entryValues.sleep_end}
+                    onChange = {handleChanges}
+                />
+                
 
-                <MoodIcons>
-                    <Custom.IconButton>
-                        <Icons.SentimentDissatisfiedOutlined />    
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentDissatisfied />
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentSatisfied />
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentSatisfiedOutlined />    
-                    </Custom.IconButton>
-                </MoodIcons>
+                <MoodSelector name = "sleep_end" value = {moods.after_sleep} moods = { moods } setMoods = { setMoods } />
                 
             </FormSection>
 
@@ -103,24 +84,11 @@ const EntryPage = ({match}) => {
                 <h5>Daily Mood</h5>
                 <br /><br />
 
-                <MoodIcons>
-                    <Custom.IconButton>
-                        <Icons.SentimentDissatisfiedOutlined />    
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentDissatisfied />
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentSatisfied />
-                    </Custom.IconButton>
-                    <Custom.IconButton>
-                        <Icons.SentimentSatisfiedOutlined />    
-                    </Custom.IconButton>
-                </MoodIcons>
+                <MoodSelector name = "daytime" value = {moods.daytime} moods = { moods } setMoods = { setMoods } />
                 
             </FormSection>
 
-            <Custom.Button>Save</Custom.Button>
+            <Custom.Button onClick={e => e.preventDefault()}>Save</Custom.Button>
             
         </EntryForm>
     );
@@ -153,7 +121,6 @@ const FormHeader = styled.div`
 
 const FormSection = styled.div`
     width: 100%;
-    height: 175px;
     padding: 16px;
     margin-bottom: 30px;
     background: linear-gradient(0deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)), #121212;
@@ -165,39 +132,7 @@ const FormSection = styled.div`
     }
 `;
 
-const DatetimeFields = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    input {
-        width: 49%;
-        background: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-    }
 
-    input:last-child {
-        width: 25%;
-    }
-`;
-
-const MoodIcons = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    button {
-        width: 50px;
-        height: 50px;
-        margin: 0 10px;
-
-        svg {
-            width: 50px;
-            height: 50px;
-        }
-    }
-`;
 
 /* End of Styled Components CSS */

@@ -1,20 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getEntries } from '../actions/entry-actions';
+import { getUser } from '../actions/user-actions';
 
-const PrivateRoute = ({component: Component, ...props}) => {
-    const savedToken = localStorage.getItem("sleepToken");
-    const { user } = useSelector(state => state.usersReducer);
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  const dispatch = useDispatch();
+  const savedToken = localStorage.getItem('sleepToken');
 
-    return (
-        <Route {...props} render = {props => {
-            if(savedToken || (user && user.token)) {
-                return <Component {...props} />;
-            } 
-            return <Redirect to = "/unauthorized" />;
-            
-        }} />
-    );
+  const [isTokenValid, setIsTokenValid] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (savedToken) {
+        await dispatch(getEntries(savedToken));
+      }
+      setIsTokenValid(true); // Proceed to render the route
+    };
+
+    checkAuth();
+  }, [dispatch, savedToken]);
+
+  if (!isTokenValid) {
+    return <div>Loading...</div>; // or a spinner component
+  }
+
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        isTokenValid ? <Component {...props} /> : <Redirect to="/unauthorized" />
+      }
+    />
+  );
 };
 
 export default PrivateRoute;

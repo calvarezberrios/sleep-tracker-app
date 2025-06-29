@@ -4,10 +4,10 @@ import {FETCH_START, fetchError} from "./user-actions";
 export const FETCH_ENTRIES_SUCCESS = "FETCH_ENTRIES_SUCCESS";
 export const FETCH_ENTRY_SUCCESS = "FETCH_ENTRY_SUCCESS";
 
-export const getEntries = () => dispatch => {
+export const getEntries = (token) => dispatch => {
     dispatch({ type: FETCH_START });
 
-    AxiosWithAuth()
+    AxiosWithAuth(token)
         .get("/sleep")
         .then(res => {
             //console.log(res.data)
@@ -27,7 +27,7 @@ export const getEntryById = (id) => dispatch => {
     AxiosWithAuth()
         .get(`/sleep/${id}`)
         .then(res => {
-            //console.log(res.data);
+           
             dispatch({
                 type: FETCH_ENTRY_SUCCESS,
                 payload: res.data
