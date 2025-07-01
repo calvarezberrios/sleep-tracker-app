@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {getUser, logout} from "../actions/user-actions";
 import { getEntries } from '../actions/entry-actions';
-import { Menu, MenuItem, Avatar, IconButton } from "@mui/material";
+import { Menu, MenuItem, IconButton } from "@mui/material";
 import * as Icons from "@mui/icons-material";
 
 const Nav = styled.div`
@@ -72,7 +72,7 @@ const NavBar = () => {
         } else {
             push("/");
         }
-    }, [dispatch]);
+    }, [dispatch, push]);
 
     const logoutUser = () => {
         localStorage.removeItem("savedUser");

@@ -1,6 +1,4 @@
 import Axios from "axios";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
 export default function AxiosWithAuth() {
     const user = JSON.parse(localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser"));

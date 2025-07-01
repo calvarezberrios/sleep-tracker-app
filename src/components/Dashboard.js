@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styled from "styled-components";
 import EntryCard from './EntryCard';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,23 +19,22 @@ const Dashboard = () => {
             }
         }, [dispatch]);
 
-    const getLast7Days = () => {
+    
+
+    const last7Days = useMemo(() => {
         const today = moment().endOf("day");
         const sevenDaysAgo = moment().startOf("day").subtract(6, "days");
 
         const filtered = entries.filter(entry => moment(entry.sleep_start).isBetween(sevenDaysAgo, today, null, []));
         return filtered;
-    };
-
-    const last7Days = useMemo(() => getLast7Days(), [entries]);
+    }, [entries]);
     
-    const getLatestEntry = () => {
+    const latestEntry = useMemo(() => {
         if (!entries || entries.length === 0) return null;
 
         return entries.reduce((latest, entry) => moment(entry.sleep_start).isAfter(moment(latest.sleep_start)) ? entry: latest
         );
-    }
-    const latestEntry = useMemo(() => getLatestEntry(), [entries]);
+    }, [entries]);
         
     if(!user || error) {
       return <p>{error?.message || "No login detected. Please log in and try again."}</p>;

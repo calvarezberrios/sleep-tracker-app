@@ -2,7 +2,6 @@ import {
     FETCH_START,
     FETCH_SUCCESS,
     FETCH_FAILURE,
-    FETCH_USER,
     LOGOUT_USER,
 } from "../actions/user-actions";
 

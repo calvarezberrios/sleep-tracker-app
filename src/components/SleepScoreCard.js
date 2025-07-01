@@ -48,29 +48,28 @@ const SleepScoreCard = ({ data }) => {
 
         data.forEach(entry => {
             totalHours += entry.sleep_time_total;
-
-            if (entry.sleep_start_mood) {
-                totalMood += entry.sleep_start_mood;
+            if (entry.moods.before_sleep) {
+                totalMood += parseInt(entry.moods.before_sleep);
                 moodCount++;
             }
 
-            if (entry.sleep_end_mood) {
-                totalMood += entry.sleep_end_mood;
+            if (entry.moods.after_sleep) {
+                totalMood += parseInt(entry.moods.after_sleep);
                 moodCount++;
             }
 
-            if (entry.daytime_mood) {
-                totalMood += entry.daytime_mood;
+            if (entry.moods.daytime) {
+                totalMood += parseInt(entry.moods.daytime);
                 moodCount++;
             }
         });
-
+        
         const avgSleepPerNight = totalHours / data.length;
         const sleepTimeScore = Math.min((avgSleepPerNight / 8) * 40, 40);
 
         const avgMood = moodCount > 0 ? totalMood / moodCount : 1;
         const moodScore = ((avgMood - 1) / 3) * 60;
-
+        
         const sleepScore = Math.round(sleepTimeScore + moodScore);
 
         return sleepScore;

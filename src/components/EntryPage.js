@@ -45,7 +45,7 @@ const EntryPage = ({ match }) => {
             daytime: 0
         });
     }
-  }, [dispatch, match.params.id]);
+  }, [dispatch, match.params.id, setEntryValues, setMoods]);
 
   useEffect(() => {
     if (entry) {

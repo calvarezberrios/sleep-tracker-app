@@ -2,17 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { getEntries } from '../actions/entry-actions';
-import moment from 'moment';
-import { useHistory } from 'react-router-dom';
-import * as Custom from '../styled-components';
 import EntryCard from './EntryCard';
 
-const moodMap = {
-    1: '😞',
-    2: '😐',
-    3: '🙂',
-    4: '😄', 
-}
 
 const HistoryPage = () => {
   const { entries, isFetching, error } = useSelector(state => state.entriesReducer);
