@@ -3,6 +3,7 @@ import styled from "styled-components";
 import moment from "moment";
 import { FaRegClock } from "react-icons/fa";
 import { useHistory } from 'react-router-dom';
+import { ButtonSmall } from '../styled-components';
 
 const moodMap = {
     1: '😞',
@@ -19,6 +20,10 @@ const EntryCard = props => {
         const minutes = Math.round((props.sleep_time_total - hours) * 60);
         return hours + " h " + minutes + " m ";
     }
+
+    const handleEdit = (id) => {
+      push(`/sleep/${props.id}`);
+    };
 
     return (
         <Card>
@@ -54,6 +59,7 @@ const EntryCard = props => {
                 <ClockIcon />
                 <div>
                     <TotalLabel>Sleep Time Total</TotalLabel>
+                    {props.isHistory && <ButtonSmall onClick = {handleEdit}>Edit</ButtonSmall>}
                     <TotalValue>{timeTotal()}</TotalValue>
                 </div>
             </Footer>
@@ -73,6 +79,7 @@ const Card = styled.div`
   width: 100%;
   height: 300px;
   font-family: 'Arial', sans-serif;
+
 `;
 
 const Row = styled.div`

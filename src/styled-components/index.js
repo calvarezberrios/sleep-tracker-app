@@ -104,6 +104,11 @@ const Button = styled.button`
     &:focus {
         outline: none;
     }
+
+    &:disabled {
+        background: #777;
+        cursor: not-allowed;
+    }
 `;
 
 const IconButton = styled.button`
@@ -154,6 +159,26 @@ const EntriesContainer = styled.div`
     }
 `;
 
+const ButtonSmall = styled.button`
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #2563eb;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+  }
+`;
+
 
 export {
     TextContainer,
@@ -163,7 +188,8 @@ export {
     Button,
     IconButton,
     NameInputGroup,
-    EntriesContainer
+    EntriesContainer,
+    ButtonSmall
 };
 
 

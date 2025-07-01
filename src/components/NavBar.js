@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { Link, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {logout} from "../actions/user-actions";
+import {getUser, logout} from "../actions/user-actions";
+import { getEntries } from '../actions/entry-actions';
+import { Menu, MenuItem, Avatar, IconButton } from "@mui/material";
+import * as Icons from "@mui/icons-material";
 
 const Nav = styled.div`
     width: 100%;
@@ -16,11 +19,12 @@ const Nav = styled.div`
     background: linear-gradient(0deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.09)), #121212;
     font-family: 'Comfortaa', cursive;
 
-    div {
+    .main {
         display: flex;
         align-items: center;
         width: 80%;
         font-weight: bold;
+        justify-content: space-between;
 
         h1 {
             font-size: 48px;
@@ -35,6 +39,11 @@ const Nav = styled.div`
         }
     }
 
+    .links {
+        font-size: 1.3rem;
+
+    }
+
     a {
         color: rgba(255, 255, 255, 0.4);
         text-decoration: none;
@@ -43,24 +52,75 @@ const Nav = styled.div`
 `;
 
 const NavBar = () => {
-    const [token, setToken] = useState(localStorage.getItem("sleepToken"));
     const { user } = useSelector(state => state.usersReducer);
     const dispatch = useDispatch();
-    const {push} = useHistory();
+    const { push, go } = useHistory();
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleMenuClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    useEffect(() => {   
+        if(localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser")) {   
+            dispatch(getUser());
+            dispatch(getEntries());
+        } else {
+            push("/");
+        }
+    }, [dispatch]);
 
     const logoutUser = () => {
-        localStorage.removeItem("sleepToken");
-        setToken(null);
+        localStorage.removeItem("savedUser");
+        sessionStorage.removeItem("currentUser");
         dispatch(logout());
+        push("/");
     }
+
     return (
         <Nav>
-            <div>
+            <div className = "main">
                 <h1 style = {{cursor: "pointer"}} onClick = {() => push("/")}>Sleep Tracker</h1>
-                {(user || token) && <Link to = "/dashboard">Dashboard</Link>}
+                {user && 
+                    <div className="links">
+                        <Link to = "/dashboard">Dashboard</Link>
+                        <Link to = "/history">History</Link>
+                    </div>
+                }
             </div>
-            <Link to = "/" onClick = {logoutUser}>{user || token ? "Log out" : "Log in"}</Link>
-            
+            {user &&
+                <div style = {{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <IconButton onClick = {() => {push("/sleep/new"); go(0)}}>
+                        <Icons.AddCircleOutline sx = {{ fontSize: 30, color: "rgba(255, 255, 255, 0.4)" }}/>
+                    </IconButton>
+
+                    <IconButton onClick = { handleMenuClick }>
+                        <Icons.AccountCircle sx = {{ fontSize: 60, color: "rgba(255, 255, 255, 0.4)" }} />
+                    </IconButton>
+
+                    <Menu
+                        anchorEl = {anchorEl}
+                        open = {Boolean(anchorEl)}
+                        onClose = {handleMenuClose}
+                        slotProps = {{
+                            paper: {
+                                style: {
+                                    backgroundColor: "#1e1e1e",
+                                    color: "#fff"
+                                }
+                            }
+                            
+                        }}
+                    >
+                        {/* <MenuItem onClick = {() => { push("/profile"); handleMenuClose(); }}>Profile</MenuItem> */}
+                        <MenuItem onClick = {() => { logoutUser(); handleMenuClose(); }}>Log Out</MenuItem>
+                    </Menu>
+                </div>
+            }
         </Nav>
     );
 };

@@ -34,7 +34,7 @@ const Login = props => {
 
     useEffect(() => {
         
-        if((user || localStorage.getItem("sleepToken")) && !error) {
+        if((user || localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser")) && !error) {
             props.history.push("/dashboard");
         } else if (error) {
             console.log(error);

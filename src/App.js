@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Dashboard from "./components/Dashboard";
 import Unauthorized from './components/Unauthorized';
 import EntryPage from "./components/EntryPage";
+import EntriesPage from './components/EntriesPage';
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
       <NavBar />
       <div className = "content">
         <Switch>
-          <Route path = "/sleep/:id" component = {EntryPage} />
+          <PrivateRoute path = "/sleep/:id" component = {EntryPage} />
+          <PrivateRoute path = "/history" component = {EntriesPage} />
           <PrivateRoute path = "/dashboard" component = {Dashboard} />
           <Route path = "/unauthorized" component = {Unauthorized} />
           <Route path = "/signup" component = {Register} />

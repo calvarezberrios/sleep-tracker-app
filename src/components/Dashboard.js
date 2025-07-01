@@ -9,10 +9,15 @@ import SleepScoreCard from './SleepScoreCard';
 import SleepScheduleBar from './SleepScheduleBar';
 
 const Dashboard = () => {
-    const { entries } = useSelector(state => state.entriesReducer);
+    const { entries, error } = useSelector(state => state.entriesReducer);
+    const { user } = useSelector(state => state.usersReducer);
     const dispatch = useDispatch();
-
     
+    useEffect(() => {   
+            if(localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser")) {   
+                dispatch(getEntries());
+            }
+        }, [dispatch]);
 
     const getLast7Days = () => {
         const today = moment().endOf("day");
@@ -32,7 +37,10 @@ const Dashboard = () => {
     }
     const latestEntry = useMemo(() => getLatestEntry(), [entries]);
         
-    
+    if(!user || error) {
+      return <p>{error?.message || "No login detected. Please log in and try again."}</p>;
+    }
+
     return (
         <DashboardGrid>
           <Row>

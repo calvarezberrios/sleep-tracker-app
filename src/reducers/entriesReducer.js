@@ -1,5 +1,5 @@
 import { FETCH_START, FETCH_FAILURE } from "../actions/user-actions";
-import { FETCH_ENTRIES_SUCCESS, FETCH_ENTRY_SUCCESS } from "../actions/entry-actions";
+import { FETCH_ENTRIES_SUCCESS, FETCH_ENTRY_SUCCESS, FETCH_DELETE_SUCCESS } from "../actions/entry-actions";
 
 const initialState = {
     entries: [],
@@ -28,6 +28,13 @@ export default function entriesReducer(state = initialState, action) {
                 ...state,
                 isFetching: false,
                 entry: action.payload,
+                error: null
+            }
+        case FETCH_DELETE_SUCCESS:
+            return {
+                ...state,
+                entry: null,
+                isFetching: false,
                 error: null
             }
         case FETCH_FAILURE:
