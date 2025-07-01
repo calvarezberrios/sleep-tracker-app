@@ -1,6 +1,6 @@
 {
-  "short_name": "Sleep Tracker",
-  "name": "Sleep Tracker App",
+  "short_name": "Sleep",
+  "name": "Sleep Tracker",
   "icons": [
     {
       "src": "favicon.ico",
