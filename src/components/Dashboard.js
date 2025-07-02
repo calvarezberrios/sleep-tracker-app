@@ -1,3 +1,4 @@
+// Updated Dashboard.js with responsive layout
 import React, { useEffect, useMemo } from 'react';
 import styled from "styled-components";
 import EntryCard from './EntryCard';
@@ -12,14 +13,12 @@ const Dashboard = () => {
     const { entries, error } = useSelector(state => state.entriesReducer);
     const { user } = useSelector(state => state.usersReducer);
     const dispatch = useDispatch();
-    
-    useEffect(() => {   
-            if(localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser")) {   
-                dispatch(getEntries());
-            }
-        }, [dispatch]);
 
-    
+    useEffect(() => {
+        if (localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser")) {
+            dispatch(getEntries());
+        }
+    }, [dispatch]);
 
     const last7Days = useMemo(() => {
         const today = moment().endOf("day");
@@ -28,90 +27,82 @@ const Dashboard = () => {
         const filtered = entries.filter(entry => moment(entry.sleep_start).isBetween(sevenDaysAgo, today, null, []));
         return filtered;
     }, [entries]);
-    
+
     const latestEntry = useMemo(() => {
         if (!entries || entries.length === 0) return null;
 
-        return entries.reduce((latest, entry) => moment(entry.sleep_start).isAfter(moment(latest.sleep_start)) ? entry: latest
-        );
+        return entries.reduce((latest, entry) => moment(entry.sleep_start).isAfter(moment(latest.sleep_start)) ? entry : latest);
     }, [entries]);
-        
-    if(!user || error) {
-      return <p>{error?.message || "No login detected. Please log in and try again."}</p>;
+
+    if (!user || error) {
+        return <p>{error?.message || "No login detected. Please log in and try again."}</p>;
     }
 
     return (
         <DashboardGrid>
-          <Row>
-            <ScoreCardContainer>
-                <SleepScoreCard data = {last7Days} />
-            </ScoreCardContainer>
-                    
-            <DurationChartContainer>
-                <SleepChart data = {last7Days} />
-            </DurationChartContainer>
-          </Row>
-          <Row>
-            <ScheduleBarContainer>
-                <SleepScheduleBar data = {last7Days} />
-            </ScheduleBarContainer>
-
-            <SleepEntryContainer>
-                {latestEntry && <EntryCard key = {latestEntry.id} {...latestEntry} />}
-            </SleepEntryContainer>
-          </Row> 
-            
+            <Row>
+                <ScoreCardContainer>
+                    <SleepScoreCard data={last7Days} />
+                </ScoreCardContainer>
+                <DurationChartContainer>
+                    <SleepChart data={last7Days} />
+                </DurationChartContainer>
+            </Row>
+            <Row>
+                <ScheduleBarContainer>
+                    <SleepScheduleBar data={last7Days} />
+                </ScheduleBarContainer>
+                <SleepEntryContainer>
+                    {latestEntry && <EntryCard key={latestEntry.id} {...latestEntry} />}
+                </SleepEntryContainer>
+            </Row>
         </DashboardGrid>
     );
 };
 
 export default Dashboard;
 
-
+// Styled Components
 const DashboardGrid = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 1100px;
-  margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 1rem;
 `;
 
 const Row = styled.div`
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
 `;
 
 const ScoreCardContainer = styled.div`
-  flex: 1;
-  max-width: 280px;
-  background: #fff;
-  border-radius: 1rem;
-  width: 100%;
-  height: 350px;
+    flex: 1;
+    min-width: 260px;
+    max-width: 100%;
 `;
 
 const DurationChartContainer = styled.div`
-  flex: 2;
-  background: #fff;
-  border-radius: 1rem;
-  width: 100%;
-  height: 350px;
-`;
-
-const SleepEntryContainer = styled.div`
-  flex: 1;
-  background: #fff;
-  border-radius: 1rem;
-  width: 100%;
-  height: 100%;
+    flex: 2;
+    min-width: 300px;
+    max-width: 100%;
 `;
 
 const ScheduleBarContainer = styled.div`
-  flex: 1;
-  background: #fff;
-  border-radius: 1rem;
-  width: 100%;
-  height: 100%;
+    flex: 1;
+    min-width: 260px;
+    max-width: 100%;
+`;
+
+const SleepEntryContainer = styled.div`
+    flex: 1;
+    min-width: 260px;
+    max-width: 100%;
 `;

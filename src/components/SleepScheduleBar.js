@@ -5,10 +5,9 @@ import moment from "moment";
 const ScheduleCard = styled.div`
   background-color: #fff;
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 3.6rem 1.5rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  height: 300px;
   font-family: 'Arial', sans-serif;
 `;
 

@@ -9,34 +9,35 @@ const moodMap = {
     1: '😞',
     2: '😐',
     3: '🙂',
-    4: '😄', 
-}
+    4: '😄',
+};
 
 const EntryCard = props => {
-    const { push } = useHistory();    
+    const { push } = useHistory();
 
     const timeTotal = () => {
         const hours = Math.floor(props.sleep_time_total);
         const minutes = Math.round((props.sleep_time_total - hours) * 60);
         return hours + " h " + minutes + " m ";
-    }
+    };
 
-    const handleEdit = (id) => {
-      push(`/sleep/${props.id}`);
+    const handleEdit = () => {
+        push(`/sleep/${props.id}`);
     };
 
     return (
         <Card>
             <Row>
-                <Label style = {{fontSize: "1.2rem"}}>Start Date</Label>
-                <Value>{moment(props.sleep_start).format("M/D/yyyy hh:mm A")}</Value>                       
+                <Label>Start Date</Label>
+                <Value>{moment(props.sleep_start).format("M/D/YYYY hh:mm A")}</Value>
             </Row>
             <RowDivider />
-            <Row>                
-                <Label style = {{fontSize: "1.2rem"}}>End Date</Label>
-                <Value>{moment(props.sleep_end).format("M/D/yyyy hh:mm A")}</Value>                
+            <Row>
+                <Label>End Date</Label>
+                <Value>{moment(props.sleep_end).format("M/D/YYYY hh:mm A")}</Value>
             </Row>
             <RowDivider />
+
             <MoodRow>
                 <MoodItem>
                     <Label>Daytime Mood</Label>
@@ -56,10 +57,12 @@ const EntryCard = props => {
             <RowDivider />
 
             <Footer>
-                <ClockIcon />
-                <div>
+                <div className="left">
+                    <ClockIcon />
                     <TotalLabel>Sleep Time Total</TotalLabel>
-                    {props.isHistory && <ButtonSmall onClick = {handleEdit}>Edit</ButtonSmall>}
+                </div>
+                <div className="right">
+                    {props.isHistory && <ButtonSmall onClick={handleEdit}>Edit</ButtonSmall>}
                     <TotalValue>{timeTotal()}</TotalValue>
                 </div>
             </Footer>
@@ -69,52 +72,44 @@ const EntryCard = props => {
 
 export default EntryCard;
 
-
-/* Styled Components CSS */
 const Card = styled.div`
   background-color: #fff;
   border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  width: 100%;
-  height: 300px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   font-family: 'Arial', sans-serif;
-
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const Row = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
-  padding: 1rem 0;
-  &:first-of-type {
-    padding-top: 0;
-  }
-  &:last-of-type {
-    padding-bottom: 0;
-  }
+  flex-wrap: wrap;
 `;
 
 const RowDivider = styled.div`
-    display: block;
-    border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+`;
+
+const Label = styled.div`
+  font-size: 1rem;
+  color: #000;
+`;
+
+const Value = styled.div`
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #555;
+  text-align: right;
 `;
 
 const MoodRow = styled.div`
   display: flex;
   justify-content: space-between;
-  margin: 1rem 0;
+  flex-wrap: wrap;
   text-align: center;
-
-`;
-
-const MoodItem = styled.div`
-  
-`;
-
-const MoodIcon = styled.div`
-    margin-top: 0.7rem;
-    font-size: 2.2rem;
 `;
 
 const MoodDivider = styled.div`
@@ -122,44 +117,46 @@ const MoodDivider = styled.div`
     border-left: 1px solid #ddd;
 `;
 
-
-const Label = styled.div`
-  font-size: 0.9rem;
-  color: #000;
+const MoodItem = styled.div`
+  flex: 1;
+  min-width: 100px;
 `;
 
-const Value = styled.div`
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #555;
+const MoodIcon = styled.div`
+  margin-top: 0.5rem;
+  font-size: 2.2rem;
 `;
 
 const Footer = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  font-weight: bold;
-  font-size: 1.1rem;
-  margin-top: 1rem;
-  & > div {
-    width: 100%;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .left, .right {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .right {
+    margin-left: auto;
   }
 `;
 
 const ClockIcon = styled(FaRegClock)`
-  margin-right: 0.7rem;
   color: #3e95d8;
-  font-size: 2rem
+  font-size: 1.5rem;
 `;
 
 const TotalLabel = styled.div`
-    color: #000;
-    font-Weight: 500;
+  color: #000;
+  font-weight: 500;
 `;
 
 const TotalValue = styled.div`
-    color: #000;
-    font-Weight: 500;
+  color: #000;
+  font-weight: 600;
+  font-size: 1.1rem;
 `;
