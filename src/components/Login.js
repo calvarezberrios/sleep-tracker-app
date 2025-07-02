@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as Icons from "@mui/icons-material";
-import { TextContainer, FormContainer, TextField, PasswordField, IconButton, Button } from "../styled-components";
+import { TextContainer, FormContainer, TextField, PasswordField, IconButton, Button, PageContainer } from "../styled-components";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import { Link } from 'react-router-dom';
 import useForm from '../hooks/useForm';
@@ -43,7 +43,7 @@ const Login = props => {
     }, [user, props.history, error])
 
     return (
-        <>
+        <PageContainer>
             <TextContainer>
                 <h2>Welcome back!</h2>
                 <p>You're one step closer to finding your ideal sleep schedule.</p>
@@ -90,7 +90,7 @@ const Login = props => {
 
                 <Button>Log in</Button>
             </FormContainer>
-        </>
+        </PageContainer>
     );
 };
 
