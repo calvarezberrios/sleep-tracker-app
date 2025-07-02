@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUser, logout } from "../actions/user-actions";
 import { getEntries } from '../actions/entry-actions';
-import { IconButton, Drawer, List, ListItem, ListItemText, ListItemButton } from "@mui/material";
+import { Menu, MenuItem, IconButton, Drawer, List, ListItem, ListItemText, ListItemButton } from "@mui/material";
 import * as Icons from "@mui/icons-material";
 
 const Nav = styled.nav`
@@ -69,14 +69,16 @@ const NavBar = () => {
   const { user } = useSelector(state => state.usersReducer);
   const dispatch = useDispatch();
   const { push, go } = useHistory();
-  const [, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     if (localStorage.getItem("savedUser") || sessionStorage.getItem("currentUser")) {
@@ -119,36 +121,54 @@ const NavBar = () => {
               <Icons.AccountCircle sx={{ fontSize: 50, color: "rgba(255, 255, 255, 0.6)" }} />
             </IconButton>
           </div>
+
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+            slotProps={{
+              paper: {
+                style: {
+                  backgroundColor: "#1e1e1e",
+                  color: "#fff",
+                },
+              },
+            }}
+          >
+            <MenuItem onClick={() => { logoutUser(); handleMenuClose(); }}>Log Out</MenuItem>
+          </Menu>
+
           <IconButton className="menuButton" onClick={toggleDrawer(true)}>
             <Icons.Menu sx={{ fontSize: 36 }} />
           </IconButton>
 
-            <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
-                <List sx={{ width: 250, backgroundColor: "#121212", color: "#fff", height: "100%" }}>
-                    <ListItem disablePadding>
-                    <ListItemButton onClick={() => { push("/dashboard"); setDrawerOpen(false); }}>
-                        <ListItemText primary="Dashboard" />
-                    </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                    <ListItemButton onClick={() => { push("/history"); setDrawerOpen(false); }}>
-                        <ListItemText primary="History" />
-                    </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                    <ListItemButton onClick={() => { push("/sleep/new"); go(0); setDrawerOpen(false); }}>
-                        <ListItemText primary="New Entry" />
-                    </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                    <ListItemButton onClick={() => { logoutUser(); setDrawerOpen(false); }}>
-                        <ListItemText primary="Log Out" />
-                    </ListItemButton>
-                    </ListItem>
-                </List>
-            </Drawer>
+          <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+            <List sx={{ width: 250, backgroundColor: "#121212", color: "#fff", height: "100%" }}>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => { push("/dashboard"); setDrawerOpen(false); }}>
+                  <ListItemText primary="Dashboard" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => { push("/history"); setDrawerOpen(false); }}>
+                  <ListItemText primary="History" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => { push("/sleep/new"); go(0); setDrawerOpen(false); }}>
+                  <ListItemText primary="New Entry" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => { logoutUser(); setDrawerOpen(false); }}>
+                  <ListItemText primary="Log Out" />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Drawer>
         </>
       )}
+
     </Nav>
   );
 };
